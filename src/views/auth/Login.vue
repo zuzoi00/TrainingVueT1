@@ -2,7 +2,7 @@
   <div>
     <form action="" id="formSubmit" @submit.prevent="userLogin">
       <div class="user-login text-center">
-      <div class="text-center Title" style="margin: 40px 0">Use Vue 3</div>
+      <div class="text-center Title" style="margin: 40px 0">Welcome to our home </div>
       <div class="user-infor text-center">
         <div class="user-input text-center">Username</div>
         <input
@@ -73,12 +73,10 @@ export default {
         this.$router.push("/User");
         localStorage.setItem("UserName", this.account.username);
         localStorage.setItem("Password", this.account.password);
-        this.$store.commit("saveInformation",this.account.username);
-
+        // this.$parent.userLoginn = localStorage.setItem("UserName");
+        // this.$store.commit("saveInformation",this.account.username);
       } else {
         this.submitStatuss = true;
-        localStorage.setItem("UserName", this.account.username);
-        localStorage.setItem("Password", this.account.password);
       }
     },
 

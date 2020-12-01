@@ -3,7 +3,7 @@
     <div class="ListName il mb-3">DANH SÁCH NGƯỜI DÙNG</div>
     <div class="Footer il text-right" >
       <i class="fas fa-user il" style="padding-right:10px"></i>
-      <div class="il">{{this.$store.getters.getUserInformation}}</div>
+      <div class="il">{{userLoginn}}</div>
     </div>
 
     <div class="Search mb-5">
@@ -85,6 +85,7 @@ export default {
   data() {
     return {
       data: [],
+      userLoginn: "" ,
       inforUserSearch:"",
       deleteItem : null,
       editItem: null,
@@ -97,7 +98,8 @@ export default {
     AddUser,DeleteUser,
   },
   created() {
-    this.loadUsers()
+    this.loadUsers();
+    this.userLoginn = localStorage.getItem("UserName");
   },
   methods: {
     loadUsers() {
