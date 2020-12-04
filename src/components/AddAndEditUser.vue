@@ -1,52 +1,64 @@
 <template>
   <div>
-    <div class="add-more">
+    <div id="add-user" class="add-more">
       <div class="text-center title"><slot name="title"></slot></div>
       <div class="add-user row">
         <div class="add-user-infor text-left col-sm-2 il">Username</div>
         <input
-          v-model="userInput.Username"
           type="text"
           class="form-control col-sm-6 il"
           aria-label="Username"
           aria-describedby="basic-addon1"
+          v-model="$parent.userDetail.userName"
         />
       </div>
       <div class="add-user row">
         <div class="add-user-infor col-sm-2 il">Name</div>
         <input
-          v-model="userInput.Name"
           type="type"
           class="form-control col-sm-6 il"
           aria-label="Username"
           aria-describedby="basic-addon1"
+          v-model="$parent.userDetail.name"
         />
       </div>
       <div class="add-user row">
         <div class="add-user-infor col-sm-2 il">Age</div>
         <input
-          v-model="userInput.Age"
           type="number"
           class="form-control col-sm-6 il"
-          aria-label="Username"
+          aria-label="Age"
           aria-describedby="basic-addon1"
+          v-model="$parent.userDetail.age"
         />
       </div>
       <div class="add-user row" style="padding-left: -370px">
         <div class="add-user-infor col-sm-2 il">Avatar</div>
-        <i class="fas fa-download col-sm-6 il"></i>
+        <input
+          type="text"
+          class="form-control col-sm-6 il"
+          aria-label="Age"
+          aria-describedby="basic-addon1"
+          v-model="$parent.userDetail.avatar"
+        />
+        <!-- <i class="fas fa-download col-sm-6 il"></i> -->
       </div>
       <div class="text-center">
         <slot name="button"></slot>
         <button
+          id="saveButton"
           slot="button"
           type="button"
           class="user-chose btn btn-light"
           @click="saveAndEditUser"
+          disabled="disabled"
+          v-if="loadingSave"
+          style="width:120px"
         >
           Save
         </button>
-        <button type="button" class="user-chose btn btn-light" @click="cancel">
+        <div class="spinner-border text-light" role="status" v-if="isLoading"></div>
+        <button type="button" class="user-chose btn btn-light user-cancel" style="width:120px" @click="cancel">
           Cancel
         </button>
       </div>
@@ -60,48 +72,62 @@ import axios from "axios";
 export default {
   data() {
     return {
-      userInput: {},
+      isLoading: false,
+      loadingSave: true
     };
   },
+  mounted() {
+    this.conditionClickButton();
+  },
   methods: {
+    conditionClickButton(){
+      var vm = this;
+      var clickButton = document.getElementById("add-user");
+      var buttonIsClicked = document.getElementById("saveButton");
+      clickButton.addEventListener("input",() => {
+        if (
+          vm.$parent.userDetail.userName !== "" &&
+          vm.$parent.userDetail.name != "" &&
+          vm.$parent.userDetail.age > 0
+        ) {
+          buttonIsClicked.removeAttribute("disabled")
+          }
+        else {
+          buttonIsClicked.setAttribute("disabled","disabled")
+        }
+      })
+    },
     cancel() {
       this.$parent.cancelAddUser();
       this.$parent.cancelEdit();
     },
     saveAndEditUser() {
-      if (this.$parent.isActiveAddUser === true) {
-        if (
-          this.userInput.Username !== "" &&
-          this.userInput.Name != "" &&
-          this.userInput.Age > 0
-        ) {
+      var self = this;
+      this.loadingSave = false
+      this.isLoading = true;
+      if (self.$parent.isActiveAddUser === true) {
           axios
             .post(
               "https://5fb795a58e07f000166430c3.mockapi.io/api/user",
-              this.userInput
+              self.$parent.userDetail
             )
             .then(() => {
+              this.loadingSave = true;
+              this.isLoading = false;
               this.$parent.loadUsers();
               this.$parent.cancelAddUser();
             });
-        }
       } else {
-        if (
-          this.editUser.Username != "" &&
-          this.editUser.Name != "" &&
-          this.editUser.Age > 0
-        ) {
           axios
             .put(
               "https://5fb795a58e07f000166430c3.mockapi.io/api/user/" +
-                this.editItem.ID,
-              this.editUser
+                self.$parent.userDetail.ID,
+              self.$parent.userDetail
             )
             .then(() => {
               this.$parent.loadUsers();
               this.$parent.cancelEdit();
             });
-        }
       }
     },
   },
@@ -149,6 +175,10 @@ button {
 .user-chose {
   font-weight: 500;
   display: inline-block;
+}
+
+.user-cancel {
+  margin-left: 60px;
 }
 </style>
 

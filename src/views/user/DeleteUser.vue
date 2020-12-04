@@ -1,9 +1,10 @@
 <template>
   <div class="delete-user">
-    <h3>Bạn có chắc chắn muốn xoá {{this.$parent.deleteItem.Name}} ?</h3>
+    <h3>Bạn có chắc chắn muốn xoá <strong >{{this.$parent.deleteItem.name}} </strong>? </h3>
     <div class="action-delete-user">
-      <a @click="deleteUser">OK</a>
-      <a @click="cancelDeleteUser">Cancel</a>
+      <a @click="deleteUser" v-if="loadingOk">OK</a>
+      <div class="spinner-border text-light" role="status" v-if="isLoading"></div>
+      <a class="user-cancel" @click="cancelDeleteUser">Cancel</a>
     </div>
   </div>
 </template>
@@ -12,14 +13,24 @@
 import axios from "axios";
 export default {
   name: "delete-user",
+  data() {
+    return {
+      isLoading: false,
+      loadingOk: true
+    }
+  },
   methods: {
     deleteUser() {
+      this.loadingOk = false;
+      this.isLoading = true;
       axios
         .delete(
           "https://5fb795a58e07f000166430c3.mockapi.io/api/user/" +
             this.$parent.deleteItem.ID
         )
         .then(() => {
+          this.isLoading = false;
+          this.loadingOk = true;
           this.$parent.loadUsers();
           this.$parent.cancelDelete();
         });
@@ -58,7 +69,6 @@ export default {
 .action-delete-user a {
   width: 80px;
   border: 1px solid #ccc;
-  margin: 15px 10px;
   color: #000;
   padding: 5px 10px;
   border-radius: 5px;
@@ -69,5 +79,13 @@ export default {
 .action-delete-user a:hover,
 .action-delete-user a:active {
   background-color: rgb(226, 226, 226);
+}
+
+.delete-user strong {
+  color: black
+}
+
+.user-cancel {
+  margin: 15px 10px 15px 45px;
 }
 </style>

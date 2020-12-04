@@ -23,17 +23,14 @@
           aria-describedby="basic-addon1"
         />
       </div>
-      <input
-        class="btn btn-primary"
-        type="submit"
-        value="Login"
-      >
+      <button id="loginButton" disabled="disabled" class="btn btn-primary">
+          Login
+      </button>
       <div v-if="submitStatuss" style="margin-top: 20px">
         Sai mật khẩu hoặc tên đăng nhập
       </div>
     </div>
     </form>
-    
   </div>
 </template>
 
@@ -52,6 +49,9 @@ export default {
       hihi:null
     };
   },
+  mounted(){
+    this.conditionClickButton();
+  },
   validations: {
     username: {
       required,
@@ -65,15 +65,30 @@ export default {
     },
   },
   methods: {
+    conditionClickButton(){
+      var vm = this;
+      var clickButton = document.getElementById("formSubmit");
+      var buttonIsClicked = document.getElementById("loginButton");
+      clickButton.addEventListener("input",() => {
+        if (
+          vm.account.username !=="" &&
+          vm.account.password != "" 
+        ) {
+          buttonIsClicked.removeAttribute("disabled")
+          }
+        else {
+          buttonIsClicked.setAttribute("disabled","disabled")
+        }
+      })
+    },
     userLogin() {
       if (
         this.account.username == "Hiweb" &&
         this.account.password == "123456"
       ) {
+        localStorage.setItem("user", this.account.username);
+        localStorage.setItem("password", this.account.password);
         this.$router.push("/User");
-        localStorage.setItem("UserName", this.account.username);
-        localStorage.setItem("Password", this.account.password);
-        // this.$parent.userLoginn = localStorage.setItem("UserName");
         // this.$store.commit("saveInformation",this.account.username);
       } else {
         this.submitStatuss = true;
@@ -119,5 +134,6 @@ export default {
   font-weight: 600;
   cursor: pointer;
 }
+
 </style>
 

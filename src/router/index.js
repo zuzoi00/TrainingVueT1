@@ -10,6 +10,16 @@ export default [
   {
     path: "/User",
     name: "User",
-    component: User
+    component: User,
+    beforeEnter: (to, from, next) => {
+      let user = localStorage.getItem('user')
+      let password = localStorage.getItem('password')
+      if (user && password) {
+        next();
+      } else {
+        next('/');
+      }
+      return;
+    }
   },
 ]

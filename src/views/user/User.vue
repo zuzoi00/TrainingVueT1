@@ -2,8 +2,18 @@
   <div class="User">
     <div class="ListName il mb-3">DANH SÁCH NGƯỜI DÙNG</div>
     <div class="Footer il text-right" >
-      <i class="fas fa-user il" style="padding-right:10px"></i>
-      <div class="il">{{userLoginn}}</div>
+      <div class="il user-name">
+        <i class="fas fa-user il" style="padding-right:10px"></i>
+        <div class="il"><b>{{userLoginn}}</b></div>
+      </div>
+      <router-link 
+      to="/"
+      title="Đăng xuất">
+        <div  class="il user-logout">
+          <i class="fas fa-sign-out-alt" @click="clearLocalStorage"></i>
+        </div>
+      </router-link>
+      
     </div>
 
     <div class="Search mb-5">
@@ -18,7 +28,7 @@
           aria-describedby="basic-addon1"
           placeholder="Search"
         />
-          <div class="btn-group text-center fr " role="group" aria-label="Third group">
+          <div class="btn-group text-center fr" role="group" aria-label="Third group">
             <button type="button" class="btn btn-primary" @click="activeAddUser">Thêm người dùng</button>
           </div>
       </div>
@@ -38,13 +48,13 @@
       <tbody>
         <tr v-for="(value, index) in data" :key="index" :class="setBackGround(index)" class="InfoTable2 row">
           <td class="board-column col-sm-1 text-center">{{index + 1}}</td>
-          <td class="board-column col-sm-3">{{value.Username}}</td>
-          <td class="board-column col-sm-3">{{value.Name}}</td>
-          <td class="board-column col-sm-1">{{value.Age}}</td>
-          <td class="board-column col-sm-2">{{value.Avatar}}</td>
+          <td class="board-column col-sm-3">{{value.userName}}</td>
+          <td class="board-column col-sm-3">{{value.name}}</td>
+          <td class="board-column col-sm-1">{{value.age}}</td>
+          <td class="board-column col-sm-2">{{value.avatar}}</td>
           <td class=" Action col-sm-2">
-            <a class="action-edit" @click="clickEdit(index)"><i class="fas fa-tools"></i></a>
-            <a class="action-delete" @click="clickDelete(index)"><i class="fas fa-trash-alt" ></i></a>
+            <a title="Sửa thông tin" class="action-edit" @click="clickEdit(index)"><i class="fas fa-tools"></i></a>
+            <a title="Xóa thông tin" class="action-delete" @click="clickDelete(index)"><i class="fas fa-trash-alt" ></i></a>
           </td>
         </tr>
       </tbody>
@@ -57,15 +67,15 @@
     </div>
 
     <div class="add--user" v-if="isActiveAddUser">
-      <AddUser>
+      <AddAndEditUser>
         <div slot="title">Add User</div>      
-      </AddUser>
+      </AddAndEditUser>
     </div>
 
     <div class="add--user" v-if="isActiveEditUser">
-      <AddUser>
+      <AddAndEditUser>
         <div slot="title">Edit User</div>      
-      </AddUser>
+      </AddAndEditUser>
     </div>
 
     <div class="delete--user" v-if="isActiveDeleteUser">
@@ -78,7 +88,7 @@
 
 <script>
 import axios from "axios"
-import AddUser from "../../components/AddUser.vue"
+import AddAndEditUser from "../../components/AddAndEditUser.vue"
 import DeleteUser from "./DeleteUser.vue"
 
 export default {
@@ -88,18 +98,23 @@ export default {
       userLoginn: "" ,
       inforUserSearch:"",
       deleteItem : null,
-      editItem: null,
       isActiveAddUser: false,
       isActiveDeleteUser: false,
       isActiveEditUser: false,
+      userDetail:{
+        name: "",
+        userName: "",
+        age:"",
+        avatar:"",
+      },
     };
   },
   components: {
-    AddUser,DeleteUser,
+    AddAndEditUser,DeleteUser,
   },
-  created() {
+  mounted() {
     this.loadUsers();
-    this.userLoginn = localStorage.getItem("UserName");
+    this.userLoginn = localStorage.getItem("user");
   },
   methods: {
     loadUsers() {
@@ -109,9 +124,12 @@ export default {
         this.data = response.data;
       });
     },
+    clearLocalStorage() {
+      localStorage.clear();
+    },
     userSearch() {
       this.data = this.data.filter((searchInfo) => {
-        return searchInfo.Name.search(this.inforUserSearch) > -1;
+        return searchInfo.userName.search(this.inforUserSearch) > -1;
       })
     },
     setBackGround(userIndex) {
@@ -120,6 +138,12 @@ export default {
       }
     },
     activeAddUser() {
+      this.userDetail = {
+        name: "",
+        userName: "",
+        age:"",
+        avatar:"Avatar"
+      }
       this.isActiveAddUser = true;
     },
     cancelAddUser(){
@@ -133,7 +157,7 @@ export default {
       this.isActiveDeleteUser = false;
     },
     clickEdit(index){
-      this.editItem = this.data[index];
+      this.userDetail = this.data[index];
       this.isActiveEditUser = true;
     },
     cancelEdit(){
@@ -167,6 +191,16 @@ export default {
   width: 200px;
   float: right;
 }
+
+.Footer .user-name {
+  width: 120px;
+}
+
+.Footer .user-logout {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
 .Search input {
   display: inline-block;
   width: 250px;
