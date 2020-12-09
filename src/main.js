@@ -1,19 +1,22 @@
 import Vue from 'vue'
 import App from './App.vue'
+import { store} from  './store/store'
 import VueRouter from 'vue-router'
-import vuetify from './plugins/vuetify'
 import routes  from './router/index.js'
-import 'roboto-fontface/css/roboto/roboto-fontface.css'
-import '@mdi/font/css/materialdesignicons.css'
+import vuetify from '@/plugins/vuetify' // path to vuetify export
 
+Vue.use(vuetify)
 Vue.config.productionTip = false
+
 Vue.use(VueRouter)
+
 const router = new VueRouter({
   mode: 'history',
-  routes,
+  routes,store
 })
+
 new Vue({
-  router,
-  vuetify,
-  render: h => h(App)
+  
+  router,store,vuetify,
+  render: h => h(App),
 }).$mount('#app')
