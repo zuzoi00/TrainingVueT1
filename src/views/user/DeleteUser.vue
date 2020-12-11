@@ -1,12 +1,35 @@
 <template>
-  <div class="delete-user">
-    <h3>Bạn có chắc chắn muốn xoá <strong >{{this.$parent.deleteItem.name}} </strong>? </h3>
-    <div class="action-delete-user">
-      <a @click="deleteUser" v-if="loadingOk">OK</a>
-      <div class="spinner-border text-light" role="status" v-if="isLoading"></div>
-      <a class="user-cancel" @click="cancelDeleteUser">Cancel</a>
-    </div>
+  <div>
+    <!-- v-model="$parent.isActiveDeleteUser" phải có cái này thì mới hiển thị -->
+    <v-dialog
+    v-model="$parent.isActiveDeleteUser"
+    max-width="390"
+  >
+    <v-card class="delete-user">
+      <v-card-text class="notification-user">
+        <p>Bạn có chắc chắn muốn xoá <strong>{{this.$parent.deleteItem.name}}</strong> ?</p>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="green darken-1"
+          text
+          @click="cancelDeleteUser"
+        >
+          Disagree
+        </v-btn>
+        <v-btn
+          color="green darken-1"
+          text
+          @click="deleteUser"
+        >
+          Agree
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   </div>
+  
 </template>
 
 <script>
@@ -17,6 +40,7 @@ export default {
     return {
       isLoading: false,
       loadingOk: true,
+
     }
   },
   methods: {
@@ -43,47 +67,18 @@ export default {
 </script>
 
 <style scoped>
+
+.notification-user {
+  margin: 20px 0 0 0 ;
+}
+
 .delete-user {
-  background-color: rgba(52, 152, 219, 1);
-  padding: 20px;
-  border-radius: 5px;
-}
-.delete-user h3 {
-  margin: 15px auto;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 550;
-}
-
-.delete-user a {
-  cursor: pointer;
-}
-
-.action-delete-user {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 40px;
-}
-
-.action-delete-user a {
-  width: 80px;
-  border: 1px solid #ccc;
-  color: #000;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-weight: 500;
   background-color: white;
+  padding-top: 30px;
+  box-shadow: none;
+  height: 200px;
 }
 
-.action-delete-user a:hover,
-.action-delete-user a:active {
-  background-color: rgb(226, 226, 226);
-}
-
-.delete-user strong {
-  color: black
-}
 
 .user-cancel {
   margin: 15px 10px 15px 45px;

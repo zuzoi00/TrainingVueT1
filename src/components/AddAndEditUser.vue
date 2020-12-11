@@ -2,68 +2,70 @@
   <div>
     <div id="add-user" class="add-more">
       <div class="text-center title"><slot name="title"></slot></div>
-      <div class="add-user row">
-        <div class="add-user-infor text-left col-sm-2 il">Username</div>
-        <v-text-field
+      <v-row class="row-table">
+        <v-col sm='3' offset-sm="1" class="text-left">Username</v-col>
+        <v-col sm='8'><v-text-field
           type="text"
-          class="col-sm-8 il"
           solo
+          :rules='rules'
           v-model="$parent.userDetail.userName"
         >
-        </v-text-field>
-      </div>
-      <div class="add-user row">
-        <div class="add-user-infor col-sm-2 il">Name</div>
-        <v-text-field
-          type="type"
-          class="col-sm-8 il"
+        </v-text-field></v-col>
+      </v-row>
+      <v-row  class="row-table">
+        <v-col sm='3' offset-sm="1" class="text-left">Name</v-col>
+        <v-col sm='8'><v-text-field
+          type="text"
           solo
+          :rules='rules'
           v-model="$parent.userDetail.name"
-        ></v-text-field>
-      </div>
-      <div class="add-user row">
-        <div class="add-user-infor col-sm-2 il">Age</div>
-        <v-text-field
+        >
+        </v-text-field></v-col>
+      </v-row>
+      <v-row  class="row-table">
+        <v-col sm='3' offset-sm="1" class="text-left">Age</v-col>
+        <v-col sm='8'><v-text-field
           type="number"
-          class="col-sm-8 il"
           solo
           v-model="$parent.userDetail.age"
-        ></v-text-field>
-      </div>
-      <div class="add-user row" style="padding-left: -370px">
-        <div class="add-user-infor col-sm-2 il">Avatar</div>
-        <v-text-field
+        >
+        </v-text-field></v-col>
+      </v-row>
+      <v-row class="row-table">
+        <v-col sm='3' offset-sm="1" class="text-left">Avatar</v-col>
+        <v-col sm='8'><v-text-field
           type="text"
-          class="col-sm-8 il"
           solo
+
           v-model="$parent.userDetail.avatar"
-        ></v-text-field>
-      </div>
-      <div class="text-center">
-        <v-btn
+        >
+        </v-text-field></v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col class="text-right" sm='3'>
+          <v-btn
           depressed
           color="light"
           v-if="loadingSave"
           @click="saveAndEditUser"
-          class="user-chose user-cancel"
-          style="width: 120px"
           >save</v-btn
-        >
-        <div
+          >
+          <div
           class="spinner-border text-light"
           role="status"
           v-if="isLoading"
         ></div>
-        <v-btn
+        </v-col>
+        <v-col sm='1'></v-col>
+        <v-col class="text-left" sm='3'>
+          <v-btn
           depressed
           color="light"
-          v-if="loadingSave"
           @click="cancel"
-          class="user-chose user-cancel"
-          style="width: 120px"
           >cancel</v-btn
         >
-      </div>
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
@@ -76,6 +78,10 @@ export default {
     return {
       isLoading: false,
       loadingSave: true,
+      rules: [
+        value => !!value || 'Bạn cần nhập thông tin',
+        value => (value && value.length >= 3) || 'Nhập ít nhất 3 kí tự',
+      ],
     };
   },
   mounted() {
@@ -136,37 +142,22 @@ export default {
 </script>
 
 <style scoped>
-.il {
-  display: inline-block;
-}
+
 .add-more {
   font-size: 20px;
   font-weight: 600;
   margin: 40px;
+  height: 500px;
 }
 
 .add-more .title {
   margin-bottom: 50px;
 }
 
-.add-more .add-user-infor {
-  width: 120px;
-  margin: 0 40px 0 20px;
+.row-table {
+  height: 80px;
 }
 
-.add-more v-text-field {
-  display: inline-block;
-  width: 400px;
-}
-
-.add-more .add-user {
-  margin: 0 0 10px 0;
-}
-
-.add-more .add-user i {
-  margin: auto 0;
-  padding: 0;
-}
 
 button {
   margin: 0 20px;

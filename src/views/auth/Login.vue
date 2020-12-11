@@ -1,32 +1,35 @@
 <template>
   <div>
     <v-form action="" id="formSubmit" @submit.prevent="userLogin">
-      <v-app>
         <div class="user-login text-center">
           <div class="text-center Title" style="margin: 40px 0">
             Welcome to our home
           </div>
-          <div class="user-infor text-center">
-            <div class="user-input text-center">Username</div>
-            <v-text-field
+          <v-row class="user-infor text-center">
+            <v-col sm='3' class="user-input text-center">Username</v-col>
+            <v-col sm='8'>
+              <v-text-field
               v-model="account.username"
               type="text"
               solo
               class="form-control"
-            >
-            </v-text-field>
-          </div>
-          <div class="user-infor text-center">
-            <div class="user-input text-center">Password</div>
-            <v-text-field
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+          <v-row class="user-infor text-center">
+            <v-col sm='3' class="user-input text-center">Password</v-col>
+            <v-col sm='8'>
+              <v-text-field
               v-model="account.password"
               type="password"
               solo
               class="form-control"
-            >
-            </v-text-field>
-          </div>
-          <v-btn id="loginButton" rounded depressed dark @click="userLogin">
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+          <v-btn :disabled="status" rounded depressed dark @click="userLogin">
             Login
           </v-btn>
           <div
@@ -37,13 +40,11 @@
             Sai mật khẩu hoặc tên đăng nhập
           </div>
         </div>
-      </v-app>
     </v-form>
   </div>
 </template>
 
 <script>
-import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
   data() {
@@ -53,35 +54,19 @@ export default {
         password: null,
       },
       submitStatuss: false,
+      status: true,
     };
   },
   mounted() {
     this.conditionClickButton();
   },
-  validations: {
-    username: {
-      required,
-      minLength: minLength(4),
-      maxLength: maxLength(8),
-    },
-    password: {
-      required,
-      minLength: minLength(6),
-      maxLength: maxLength(10),
-    },
-  },
   methods: {
     conditionClickButton() {
-      var vm = this;
-      var clickButton = document.getElementById("formSubmit");
-      var buttonIsClicked = document.getElementById("loginButton");
-      clickButton.addEventListener("input", () => {
-        if (vm.account.username != "" && vm.account.password != "") {
-          buttonIsClicked.removeAttribute("disabled");
+        if (this.account.username != "" && this.account.password != "") {
+          this.status= false;
         } else {
-          buttonIsClicked.setAttribute("disabled", "disabled");
+          this.status= true;
         }
-      });
     },
     userLogin() {
       if (
@@ -107,7 +92,7 @@ export default {
   width: 50%;
   font-size: 20px;
   font-weight: 600;
-  margin: 40px auto 40px;
+  margin: 40px auto;
 }
 
 .user-login .Title {
@@ -126,7 +111,8 @@ export default {
 }
 
 .user-login .user-infor {
-  margin-bottom: 50px;
+  margin-bottom: 10px;
+  height: 80px;
 }
 
 .title-box {

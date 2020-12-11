@@ -1,54 +1,54 @@
 <template>
   <div class="User">
-    <div class="ListName il mb-3">DANH SÁCH NGƯỜI DÙNG</div>
-    <div class="Footer il text-right">
-      <div class="il user-name">
-        <i class="fas fa-user il" style="padding-right: 10px"></i>
-        <div class="il">
-          <b>{{ userLoginn }}</b>
-        </div>
-      </div>
-      <router-link to="/" title="Đăng xuất">
-        <div class="il user-logout">
-          <i class="fas fa-sign-out-alt" @click="clearLocalStorage"></i>
-        </div>
-      </router-link>
-    </div>
-
-    <div class="Search mb-5">
-      <div class="mb-3" style="font-weight: 600">Tìm kiếm theo tên</div>
-      <div class="SearchInput">
-        <v-text-field
-          append-icon="mdi-magnify"
+    <v-row justify="end">
+      <v-col sm="3">
+        <v-row justify="end" >
+          <v-col sm="2" ><v-icon>fas fa-user il</v-icon></v-col>
+          <v-col sm="3" >
+            <p>{{ userLoginn }}</p>
+          </v-col>
+          <router-link to="/" title="Đăng xuất">
+            <v-col sm="2">
+              <v-icon @click="clearLocalStorage">fas fa-sign-out-alt</v-icon>
+            </v-col>
+          </router-link>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col sm="6"  class="font-weight-bold text-center">
+         <h3>DANH SÁCH NGƯỜI DÙNG</h3>
+      </v-col>
+    </v-row>
+    <v-row justify="start">
+      <v-col sm='3' class="text-left font-weight-bolt">Tìm kiếm theo tên</v-col>
+    </v-row>
+    <v-row justify="space-between">
+      <v-col sm='4'><v-text-field
+          append-icon="mdi-magnify "
           outlined
           v-model="inforUserSearch"
           @change="userSearch"
           type="text"
           placeholder="Search"
-          class="il"
-          style="width: 30%"
         ></v-text-field>
-        <div
-          class="btn-group text-center il fr"
-          role="group"
-        >
-          <v-btn depressed color="primary" @click="activeAddUser"
+      </v-col>
+      <v-col sm='3' class="text-right">
+        <v-btn depressed color="primary" @click="activeAddUser"
             >Thêm người dùng</v-btn
           >
-        </div>
-      </div>
-    </div>
-
+      </v-col>
+    </v-row>
     <v-simple-table class="table">
       <thead>
         <tr class="InfoTable1">
-          <v-row  class="InfoTable1">
-            <v-col sm='1' class="board-column  text-center">STT</v-col>
-            <v-col sm='3' class="board-column ">Username</v-col>
-            <v-col sm='3' class="board-column ">Name</v-col>
-            <v-col sm='1' class="board-column ">Age</v-col>
-            <v-col sm='2' class="board-column ">Avatar</v-col>
-            <v-col sm='2' class="Action ">Action</v-col>
+          <v-row class="InfoTable1">
+            <v-col sm="1" class="board-column text-center">STT</v-col>
+            <v-col sm="3" class="board-column">Username</v-col>
+            <v-col sm="3" class="board-column">Name</v-col>
+            <v-col sm="1" class="board-column">Age</v-col>
+            <v-col sm="2" class="board-column">Avatar</v-col>
+            <v-col sm="2" class="Action">Action</v-col>
           </v-row>
         </tr>
       </thead>
@@ -59,12 +59,12 @@
           :class="setBackGround(index)"
           class="InfoTable2 row"
         >
-          <v-col sm='1' class="board-column text-center">{{ index + 1 }}</v-col>
-          <v-col sm='3' class="board-column">{{ value.userName }}</v-col>
-          <v-col sm='3' class="board-column">{{ value.name }}</v-col>
-          <v-col sm='1' class="board-column">{{ value.age }}</v-col>
-          <v-col sm='2' class="board-column">{{ value.avatar }}</v-col>
-          <v-col sm='2' class="Action">
+          <v-col sm="1" class="board-column text-center">{{ index + 1 }}</v-col>
+          <v-col sm="3" class="board-column">{{ value.userName }}</v-col>
+          <v-col sm="3" class="board-column">{{ value.name }}</v-col>
+          <v-col sm="1" class="board-column">{{ value.age }}</v-col>
+          <v-col sm="2" class="board-column">{{ value.avatar }}</v-col>
+          <v-col sm="2" class="Action">
             <a
               title="Sửa thông tin"
               class="action-edit"
@@ -82,12 +82,19 @@
       </tbody>
     </v-simple-table>
 
-    <div class="board-page">
-      <a class="text-center active">1</a>
-      <a class="text-center">2</a>
-      <a class="text-center">3</a>
-    </div>
-
+    <v-row justify="end">
+      <v-col sm='4'>
+        <div class="text-center">
+          <v-pagination
+            v-model="page"
+            :length="4"
+            prev-icon="mdi-menu-left"
+            next-icon="mdi-menu-right"
+          ></v-pagination>
+        </div>  
+      </v-col>
+    </v-row>
+    
     <div class="add--user" v-if="isActiveAddUser">
       <AddAndEditUser>
         <div slot="title">Add User</div>
@@ -100,9 +107,7 @@
       </AddAndEditUser>
     </div>
 
-    <div class="delete--user" v-if="isActiveDeleteUser">
-      <DeleteUser></DeleteUser>
-    </div>
+    <DeleteUser v-if="isActiveDeleteUser"></DeleteUser>
   </div>
 </template>
 
@@ -120,7 +125,7 @@ export default {
       inforUserSearch: "",
       deleteItem: null,
       isActiveAddUser: false,
-      isActiveDeleteUser: false,
+      isActiveDeleteUser: true,
       isActiveEditUser: false,
       userDetail: {
         name: "",
@@ -128,11 +133,11 @@ export default {
         age: "",
         avatar: "",
       },
+      page:1
     };
   },
   components: {
-    AddAndEditUser,
-    DeleteUser,
+    AddAndEditUser,DeleteUser,
   },
   mounted() {
     this.loadUsers();
@@ -178,6 +183,7 @@ export default {
     cancelDelete() {
       this.isActiveDeleteUser = false;
     },
+
     clickEdit(index) {
       this.userDetail = this.data[index];
       this.isActiveEditUser = true;
@@ -201,37 +207,6 @@ export default {
   position: relative;
   padding: 40px 50px;
   background-color: white;
-}
-
-.ListName {
-  font-weight: 600;
-  font-size: 21px;
-  padding-left: 500px;
-}
-
-.Footer {
-  width: 200px;
-  float: right;
-}
-
-.Footer .user-name {
-  width: 120px;
-}
-
-.Footer .user-logout {
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.Search input {
-  display: inline-block;
-  width: 250px;
-  border: 1px solid #007bff;
-}
-
-.Search .btn-group {
-  display: inline-block;
-  width: 200px;
 }
 
 .table {
@@ -276,22 +251,13 @@ table .InfoTable2 {
 }
 
 .board-page {
-  display: flex;
-  justify-content: flex-end;
-  margin: 15px 0;
-}
-
-.board-page a {
-  width: 60px;
-  margin: 5px 3px;
-  height: 30px;
-  line-height: 30px;
   border: blue solid 1px;
   background-color: rgb(226, 226, 226);
   cursor: pointer;
+  height: 30px;
 }
 
-.board-page a:hover {
+.board-page :hover {
   background-color: #007bffa3;
 }
 
@@ -301,24 +267,6 @@ table .InfoTable2 {
   top: 15px;
   left: 350px;
   background-color: #3797ff;
-  z-index: 3;
-}
-
-.delete--user {
-  position: absolute;
-  width: 50%;
-  top: 40px;
-  left: 360px;
-  background-color: #89bbf1;
-  z-index: 2;
-}
-
-.edit--user {
-  position: absolute;
-  width: 50%;
-  top: 15px;
-  left: 350px;
-  background-color: #41ce41;
   z-index: 3;
 }
 </style>
