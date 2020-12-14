@@ -10,6 +10,7 @@
             <v-col sm='8'>
               <v-text-field
               v-model="account.username"
+              placeholder="Hiweb"
               type="text"
               solo
               class="form-control"
@@ -21,6 +22,7 @@
             <v-col sm='3' class="user-input text-center">Password</v-col>
             <v-col sm='8'>
               <v-text-field
+              placeholder="123456"
               v-model="account.password"
               type="password"
               solo
@@ -29,7 +31,7 @@
               </v-text-field>
             </v-col>
           </v-row>
-          <v-btn :disabled="status" rounded depressed dark @click="userLogin">
+          <v-btn :disabled="loginStatus" rounded depressed dark @click="userLogin">
             Login
           </v-btn>
           <div
@@ -54,7 +56,7 @@ export default {
         password: null,
       },
       submitStatuss: false,
-      status: true,
+      loginStatus: true,
     };
   },
   mounted() {
@@ -63,9 +65,9 @@ export default {
   methods: {
     conditionClickButton() {
         if (this.account.username != "" && this.account.password != "") {
-          this.status= false;
+          this.loginStatus= false;
         } else {
-          this.status= true;
+          this.loginStatus= true;
         }
     },
     userLogin() {

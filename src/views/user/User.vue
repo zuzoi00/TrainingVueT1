@@ -1,30 +1,32 @@
 <template>
-  <div class="User">
-    <v-row justify="end">
+  <div>
+    <v-row class="about-user" justify="end">
       <v-col sm="3">
-        <v-row justify="end" >
-          <v-col sm="2" ><v-icon>fas fa-user il</v-icon></v-col>
-          <v-col sm="3" >
-            <p>{{ userLoginn }}</p>
+        <v-row justify="end">
+          <v-col  sm="1"><v-icon small>fas fa-user il</v-icon></v-col>
+          <v-col sm="3">
+            <h3>{{ userLoginn }}</h3>
           </v-col>
           <router-link to="/" title="Đăng xuất">
             <v-col sm="2">
-              <v-icon @click="clearLocalStorage">fas fa-sign-out-alt</v-icon>
+              <v-icon small @click="clearLocalStorage">fas fa-sign-out-alt</v-icon>
             </v-col>
           </router-link>
         </v-row>
       </v-col>
     </v-row>
+  <div class="User">
     <v-row justify="center">
-      <v-col sm="6"  class="font-weight-bold text-center">
-         <h3>DANH SÁCH NGƯỜI DÙNG</h3>
+      <v-col sm="6" class="font-weight-bold text-center">
+        <h3>DANH SÁCH NGƯỜI DÙNG</h3>
       </v-col>
     </v-row>
     <v-row justify="start">
-      <v-col sm='3' class="text-left font-weight-bolt">Tìm kiếm theo tên</v-col>
+      <v-col sm="3" class="text-left font-weight-bolt "><strong>Tìm kiếm theo tên</strong> </v-col>
     </v-row>
     <v-row justify="space-between">
-      <v-col sm='4'><v-text-field
+      <v-col sm="4"
+        ><v-text-field
           append-icon="mdi-magnify "
           outlined
           v-model="inforUserSearch"
@@ -33,10 +35,10 @@
           placeholder="Search"
         ></v-text-field>
       </v-col>
-      <v-col sm='3' class="text-right">
-        <v-btn depressed color="primary" @click="activeAddUser"
-            >Thêm người dùng</v-btn
-          >
+      <v-col sm="3" class="text-right">
+        <v-btn depressed color="primary" @click="activeAddUser">
+          <v-icon medium left>mdi-account-plus</v-icon> Thêm người dùng</v-btn
+        >
       </v-col>
     </v-row>
     <v-simple-table class="table">
@@ -83,7 +85,7 @@
     </v-simple-table>
 
     <v-row justify="end">
-      <v-col sm='4'>
+      <v-col sm="4">
         <div class="text-center">
           <v-pagination
             v-model="page"
@@ -91,10 +93,10 @@
             prev-icon="mdi-menu-left"
             next-icon="mdi-menu-right"
           ></v-pagination>
-        </div>  
+        </div>
       </v-col>
     </v-row>
-    
+
     <div class="add--user" v-if="isActiveAddUser">
       <AddAndEditUser>
         <div slot="title">Add User</div>
@@ -106,8 +108,20 @@
         <div slot="title">Edit User</div>
       </AddAndEditUser>
     </div>
-
-    <DeleteUser v-if="isActiveDeleteUser"></DeleteUser>
+    <div v-if="isActiveDeleteUser">
+      <DeleteUser></DeleteUser>
+    </div>
+    <v-alert
+      outlined
+      height="60px"
+      icon="mdi-account-check"
+      v-model="snackbarSuccessNotification"
+      :timeout="timeoutSuccessNotification"
+      class="alert text-white text-center"
+    >
+      {{ successNotification }}
+    </v-alert>
+  </div>
   </div>
 </template>
 
@@ -125,7 +139,7 @@ export default {
       inforUserSearch: "",
       deleteItem: null,
       isActiveAddUser: false,
-      isActiveDeleteUser: true,
+      isActiveDeleteUser: false,
       isActiveEditUser: false,
       userDetail: {
         name: "",
@@ -133,20 +147,29 @@ export default {
         age: "",
         avatar: "",
       },
-      page:1
+      page: 1,
+      snackbarSuccessNotification: false,
+      timeoutSuccessNotification: 2500,
+      successNotification: null,
+      editSuccessNotification: "Sửa thành công",
+      addSuccessNotification: "Thêm thành công",
+      deleteSuccessNotification: "Xóa thành công",
     };
   },
   components: {
-    AddAndEditUser,DeleteUser,
+    AddAndEditUser,
+    DeleteUser,
   },
   mounted() {
     this.loadUsers();
     this.userLoginn = localStorage.getItem("user");
   },
+  
+  //?p=1&l=10 để phân trang với limit bằng 10
   methods: {
     loadUsers() {
       axios
-        .get("https://5fb795a58e07f000166430c3.mockapi.io/api/user")
+        .get("https://5fb795a58e07f000166430c3.mockapi.io/api/user?sortBy=ID&order=desc")
         .then((response) => {
           this.data = response.data;
         });
@@ -185,7 +208,7 @@ export default {
     },
 
     clickEdit(index) {
-      this.userDetail = this.data[index];
+      this.userDetail = Object.assign({}, this.data[index]);
       this.isActiveEditUser = true;
     },
     cancelEdit() {
@@ -196,22 +219,24 @@ export default {
 </script>
 
 <style scoped>
-.il {
-  display: inline-block;
+
+.about-user {
+  padding-right:50px;
+  background-color: #e6e6e6;
+  margin-bottom: 20px;
+  box-shadow: 1px 1px 5px 0.3px black;
 }
 
-.fr {
-  float: right;
-}
 .User {
   position: relative;
-  padding: 40px 50px;
+  padding: 0px 50px;
   background-color: white;
 }
 
 .table {
   width: 100%;
   border: 1px solid black;
+  box-shadow: 0 0 3px 1px black ;
 }
 
 table a {
@@ -262,11 +287,21 @@ table .InfoTable2 {
 }
 
 .add--user {
-  position: absolute;
+  position: fixed;
   width: 50%;
   top: 15px;
   left: 350px;
-  background-color: #3797ff;
+  background-color: #e0e0e0;
   z-index: 3;
+  box-shadow: 0 0 5px 1px black;
+}
+
+.alert {
+  z-index: 2;
+  position: absolute;
+  background-color: green !important;
+  color: white !important;
+  top: 196px;
+  left: 511px;
 }
 </style>

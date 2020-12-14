@@ -7,23 +7,31 @@
   >
     <v-card class="delete-user">
       <v-card-text class="notification-user">
-        <p>Bạn có chắc chắn muốn xoá <strong>{{this.$parent.deleteItem.name}}</strong> ?</p>
+        <p style="font-size:16px">Bạn có chắc chắn muốn xoá <strong>{{this.$parent.deleteItem.name}}</strong> ?</p>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          color="green darken-1"
+          color="primary darken-1"
+          text
+          @click="deleteUser"
+          v-if="isDisplayBtnSave"
+        >
+          Có
+        </v-btn>
+        <v-progress-circular
+            style="margin: 0 20px"
+            v-if="isLoadingSave"
+            :size="30"
+            color="primary"
+            indeterminate
+        ></v-progress-circular>
+          <v-btn
+          color="primary darken-1"
           text
           @click="cancelDeleteUser"
         >
-          Disagree
-        </v-btn>
-        <v-btn
-          color="green darken-1"
-          text
-          @click="deleteUser"
-        >
-          Agree
+          Không 
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -38,30 +46,36 @@ export default {
   name: "delete-user",
   data() {
     return {
-      isLoading: false,
-      loadingOk: true,
+      isLoadingSave: false,
+      isDisplayBtnSave: true,
 
     }
   },
   methods: {
     deleteUser() {
-      this.loadingOk = false;
-      this.isLoading = true;
+      this.isDisplayBtnSave = false;
+      this.isLoadingSave = true;
       axios
         .delete(
           "https://5fb795a58e07f000166430c3.mockapi.io/api/user/" +
             this.$parent.deleteItem.ID
         )
         .then(() => {
-          this.isLoading = false;
-          this.loadingOk = true;
           this.$parent.loadUsers();
           this.$parent.cancelDelete();
+          this.$parent.snackbarSuccessNotification = true;
+          this.$parent.successNotification = this.$parent.deleteSuccessNotification;
+          this.cancelSuccessAlert();
         });
     },
     cancelDeleteUser() {
       this.$parent.cancelDelete();
     },
+    cancelSuccessAlert(){
+      setTimeout(() => {
+				this.$parent.snackbarSuccessNotification = false;
+			}, 2000);
+    }
   },
 };
 </script>
