@@ -2,6 +2,7 @@
   <div>
     <!-- v-model="$parent.isActiveDeleteUser" phải có cái này thì mới hiển thị -->
     <v-dialog
+    class="delete"
     v-model="$parent.isActiveDeleteUser"
     max-width="390"
   >
@@ -12,22 +13,26 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          color="primary darken-1"
+          class="card"
+          color="white"
+          depressed
           text
           @click="deleteUser"
           v-if="isDisplayBtnSave"
         >
           Có
         </v-btn>
-        <v-progress-circular
+        <v-progress-circular  
             style="margin: 0 20px"
+            depressed
             v-if="isLoadingSave"
             :size="30"
-            color="primary"
+            color="white"
             indeterminate
         ></v-progress-circular>
           <v-btn
-          color="primary darken-1"
+          class="card"
+          color="white "
           text
           @click="cancelDeleteUser"
         >
@@ -48,7 +53,6 @@ export default {
     return {
       isLoadingSave: false,
       isDisplayBtnSave: true,
-
     }
   },
   methods: {
@@ -87,12 +91,18 @@ export default {
 }
 
 .delete-user {
-  background-color: white;
   padding-top: 30px;
   box-shadow: none;
   height: 200px;
+  border: 10px solid #1976d2 !important;
+  background-color: green !important;
 }
 
+.card {
+  background-color: #1976d2;
+  width: 60px;
+  text-align: center;
+}
 
 .user-cancel {
   margin: 15px 10px 15px 45px;

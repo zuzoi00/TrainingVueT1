@@ -5,7 +5,7 @@
         <v-row justify="end">
           <v-col  sm="1"><v-icon small>fas fa-user il</v-icon></v-col>
           <v-col sm="3">
-            <h3>{{ userLoginn }}</h3>
+            <h4>{{ userLoginn }}</h4>
           </v-col>
           <router-link to="/" title="Đăng xuất">
             <v-col sm="2">
@@ -41,7 +41,16 @@
         >
       </v-col>
     </v-row>
-    <v-simple-table class="table">
+    <div class="loading">
+      <v-progress-circular
+            v-if="isLoadingTable"
+            :size="50"
+            color="primary"
+            indeterminate
+          ></v-progress-circular>
+    </div>
+    
+    <v-simple-table class="table" v-if="isDisplayTable">
       <thead>
         <tr class="InfoTable1">
           <v-row class="InfoTable1">
@@ -134,6 +143,8 @@ import DeleteUser from "./DeleteUser.vue";
 export default {
   data() {
     return {
+      isLoadingTable: true,
+      isDisplayTable: false,
       data: [],
       userLoginn: "",
       inforUserSearch: "",
@@ -164,7 +175,9 @@ export default {
     this.loadUsers();
     this.userLoginn = localStorage.getItem("user");
   },
-  
+  computed: {
+    
+  },
   //?p=1&l=10 để phân trang với limit bằng 10
   methods: {
     loadUsers() {
@@ -172,6 +185,8 @@ export default {
         .get("https://5fb795a58e07f000166430c3.mockapi.io/api/user?sortBy=ID&order=desc")
         .then((response) => {
           this.data = response.data;
+          this.isLoadingTable = false;
+          this.isDisplayTable = true;
         });
     },
     clearLocalStorage() {
@@ -179,8 +194,11 @@ export default {
     },
     userSearch() {
       this.data = this.data.filter((searchInfo) => {
-        return searchInfo.userName.search(this.inforUserSearch) > -1;
-      });
+          return searchInfo.userName.search(this.inforUserSearch) > -1
+          || searchInfo.name.search(this.inforUserSearch) > -1
+          || searchInfo.age.search(this.inforUserSearch) > -1 
+        }
+      );
     },
     setBackGround(userIndex) {
       if (userIndex % 2 == 0) {
@@ -215,6 +233,15 @@ export default {
       this.isActiveEditUser = false;
     },
   },
+  watch: {
+    inforUserSearch(){
+      if ( this.inforUserSearch === ''){
+        this.loadUsers()
+      }
+      console.log(this.inforUserSearch);
+    }
+  },
+  
 };
 </script>
 
@@ -303,5 +330,13 @@ table .InfoTable2 {
   color: white !important;
   top: 196px;
   left: 511px;
+}
+
+.loading {
+  /* padding-top: 120px; */
+  position: fixed;
+  top: 400px;
+  left: 630px;
+  text-align: center;
 }
 </style>
